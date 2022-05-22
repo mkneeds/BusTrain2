@@ -1,9 +1,8 @@
-
 #include "Menu.h"
 
 using namespace std;
 
-const int SIZE_ARR_OF_ACCOUNTS = 1;
+const int8_t SIZE_ARR_OF_ACCOUNTS = 1;
 const char* ADMIN_STATUS = "111";
 
 const string FILE_OF_ACCOUNTS = "User.txt";
@@ -70,6 +69,102 @@ string SetLogin();
 string SetPassword();
 HANDLE hout = GetStdHandle(STD_OUTPUT_HANDLE);
 
+string data_card() {
+
+	cin.clear();
+	bool flag = false;
+	string str;
+	while (flag == false) {
+		cin.clear();
+		cout << "\tВведите срок действии карты" << endl;
+		cout << "Введите месяц:" << endl;
+		cin.clear();
+		int mounth;
+		mounth = checkInt();
+		cin.clear();
+		if (mounth <= 12 && mounth >= 1) {
+			flag = true;
+			cout << "Введите год:" << endl;
+			cin.clear();
+			int year = checkInt();
+			cin.clear();
+			if (year >= 20 && year <= 25) {
+				flag = true;
+				string m = to_string(mounth);
+				string y = to_string(year);
+				str.append(m);
+				str.push_back('/');
+				str.append(y);
+				str.erase(std::remove(str.begin(), str.end(), ' '), str.end());
+			}
+			else {
+				cout << "Неверный формат...Повторите попытку..." << endl;
+				system("pause");
+				system("cls");
+				flag = false;
+			}
+		}
+		else {
+			cout << "Неверный формат...Повторите попытку..." << endl;
+			system("pause");
+			system("cls");
+			flag = false;
+		}
+	}
+	return str;
+}
+string data_bus() {
+
+	cin.clear();
+	bool flag = false;
+	string str;
+	while (flag == false) {
+		cout << "Введите час:" << endl;
+		int mounth;
+		while (!(cin >> mounth))
+		{
+			system("cls");
+			cin.clear();
+			cin.ignore();
+			cout << "Введите час: ";
+		}
+		if (mounth <= 23 && mounth >= 0) {
+			flag = true;
+			cout << "Введите минуты:" << endl;
+			int year;
+			while (!(cin >> year))
+			{
+				system("cls");
+				cin.clear();
+				cin.ignore();
+				cout << "Введите минуты: ";
+			}
+			if (year >= 0 && year <= 59) {
+				flag = true;
+				string m = to_string(mounth);
+				string y = to_string(year);
+				str.append(m);
+				str.push_back(':');
+				str.append(y);
+				str.erase(std::remove(str.begin(), str.end(), ' '), str.end());
+			}
+			else {
+				cout << "Неверный формат...Повторите попытку..." << endl;
+				system("pause");
+				system("cls");
+				flag = false;
+			}
+		}
+		else {
+			cout << "Неверный формат...Повторите попытку..." << endl;
+			system("pause");
+			system("cls");
+			flag = false;
+		}
+	}
+	return str;
+}
+
 enum class color : unsigned short
 {
 	black, blue, green, cyan, red, magenta, brown, lightgray, darkgray,
@@ -85,11 +180,11 @@ void set_col(color foreground, color background)
 
 int main()
 {
-	system("cls");
-	set_col(color::green, color::black);
 	SetConsoleCP(1251);
 	SetConsoleOutputCP(1251);
 	setlocale(LC_ALL, "rus");
+	system("cls");
+	set_col(color::green, color::black);
 	menu::pasxx();
 	primary_authorization();
 
@@ -146,8 +241,8 @@ void auth() {
 	memset(main_loogin, 0, sizeof(main_loogin));
 	char* login = new char[256];
 	char* password = new char[256];
-	int controller, autho;
-	int access = 0;
+	int8_t controller, autho;
+	int8_t access = 0;
 	autho = controller = 0;
 	cout << "Login: "; cin.clear(); cin.getline(login, 256, '\n');
 	strcpy(main_loogin, login);
@@ -346,34 +441,99 @@ string SetPassword()
 	delete[] BufForWriting;
 }
 
+
 void addInformation() {
 	system("cls");
 	Tickets* mas_of_ticket = new Tickets[SIZE_ARR_OF_TICKET];
 	cout << "\tВведите количество добавлений ~ Автобусных рейсов" << endl;
-	int chislo;
-	cin >> chislo;
+	int chislo=checkInt();
+	
 	for (int i = 0; i < chislo; i++) {
-		cout << "\tВведите номер рейса:" << endl;
-		cin >> mas_of_ticket[i].Number_of_route;
-		cout << "\tВведите место отправления :" << endl;
-		cin >> mas_of_ticket[i].DeparturePlace;
-		cout << "\tВведите место прибытия:" << endl;
-		cin >> mas_of_ticket[i].ArrivalPlace;
+		bool flagss = false;
+		while (flagss == false) {
+			cout << "\tВведите номер рейса:" << endl;
+			string id;
+			cin >> id;
+			if (all_of(id.begin(), id.end(), [](char c) { return std::isalpha(c); })) {
+				cout << "Неверный формат...Введите повторно" << endl;
+				flagss = false;
+			}
+			else {
+				mas_of_ticket[0].Number_of_route = id;
+				flagss = true;
+				
+			}
+		}
+		bool s = false;
+		while (s == false) {
+			cout << "\tВведите место отправления :" << endl;
+			string idd;
+			cin >> idd;
+			if (all_of(idd.begin(), idd.end(), [](char c) { return std::isdigit(c); })) {
+				cout << "Неверный формат...Введите повторно" << endl;
+				s = false;
+			}
+			else {
+				mas_of_ticket[0].DeparturePlace = idd;
+				s = true;
+			}
+		}
+		bool flagsss = false;
+		while (flagsss == false) {
+			cout << "\tВведите место прибытия :" << endl;
+			string iddd;
+			cin >> iddd;
+			if (all_of(iddd.begin(), iddd.end(), [](char c) { return std::isdigit(c); })) {
+				mas_of_ticket[0].ArrivalPlace = iddd;
+				flagsss = true;
+				cout << "Неверный формат...Введите повторно" << endl;
+				flagsss = false;
+			}
+			else {
+				mas_of_ticket[0].ArrivalPlace = iddd;
+				flagsss = true;
+			}
+		}
 		cout << "\tВведите время отправления:" << endl;
-		cin >> mas_of_ticket[i].DepDate;
+		mas_of_ticket[i].DepDate = data_bus();
 		cout << "\tВведите время прибытия:" << endl;
-		cin >> mas_of_ticket[i].ArrDate;
-		cout << "\tВведите количество билетов:" << endl;
-		cin >> mas_of_ticket[i].Num_of_ticket;
-		cout << "\tВведите цену:" << endl;
-		cin >> mas_of_ticket[i].price;
+		mas_of_ticket[i].ArrDate = data_bus();
+		bool zflagss = false;
+		while (zflagss == false) {
+			cout << "\tВведите количество билетов:" << endl;
+			string id;
+			cin >> id;
+			if (all_of(id.begin(), id.end(), [](char c) { return std::isalpha(c); })) {
+				cout << "Неверный формат...Введите повторно" << endl;
+				zflagss = false;
+			}
+			else {
+				mas_of_ticket[i].Num_of_ticket = id;
+				zflagss = true;
+
+			}
+		}
+		bool zzflagss = false;
+		while (zzflagss == false) {
+			cout << "\tВведите цену:" << endl;
+			string ids;
+			cin >> ids;
+			if (all_of(ids.begin(), ids.end(), [](char c) { return std::isalpha(c); })) {
+				cout << "Неверный формат...Введите повторно" << endl;
+				zzflagss = false;
+			}
+			else {
+				mas_of_ticket[i].price = ids;
+				zzflagss = true;
+
+			}
+		}
 		writeEndFileTickets(mas_of_ticket[i]);
 	}
 	delete[]mas_of_ticket;
 	admin();
 }
 void changeInformation() {
-
 	system("cls");
 	ifstream fout(FILE_OF_TICKETS, ios::in);
 	showInormatiom();
@@ -386,6 +546,7 @@ void changeInformation() {
 	int counter_check_str_first = 0;
 	cin >> number_of_route;
 	vector <string> vec;
+	bool flag = false;
 	while (!fout.eof()) {
 		fout >> number_check;
 		counter++;
@@ -397,16 +558,13 @@ void changeInformation() {
 					vec.push_back(number_check);
 					fout >> number_check;
 					counter_check++;
-
+					flag = true;
 				}
 				break;
 			}
 			else {
-				cout << "\tТакого рейса нет.Повторите попытку" << endl;
-				system("pause");
-				delete[]number_check;
-				delete[]number_of_route;
-				admin();
+				flag = false;
+				
 			}
 		}
 		if (counter == 8) {
@@ -414,6 +572,13 @@ void changeInformation() {
 			counter_check_str++;
 
 		}
+	}
+	if (flag == false) {
+		cout << "\tТакого рейса нет.Повторите попытку" << endl;
+		system("pause");
+		delete[]number_check;
+		delete[]number_of_route;
+		admin();
 	}
 	if (counter == 1) {
 		counter_check_str = 1;
@@ -731,7 +896,7 @@ void sort() {
 	ofstream onz(FILE_OF_TICKETS);
 	copy(tz.begin(), tz.end(), ostream_iterator<Tickets>(onz, "\n"));
 	onz.close();
-	
+
 
 }
 void change_user() {
@@ -970,7 +1135,7 @@ void buyPass() {
 	ifstream file;
 	file.open(FILE_OF_TICKETS);
 	if (!file) {
-		cout << "Ошибка, невозможно открыть файл: " << FILE_OF_TICKETS<< endl;
+		cout << "Ошибка, невозможно открыть файл: " << FILE_OF_TICKETS << endl;
 	}
 	prov_bal();
 	cout << "\t\tВведите номер рейса для покупки:" << endl;
@@ -1056,7 +1221,7 @@ void buyPass() {
 			fzz.close();
 			string new_chislo = to_string(new_chislo_tickets);
 			string new_price = to_string(price);
-			
+
 			Tickets* mas_of_ticket = new Tickets[1];
 			mas_of_ticket[0].Number_of_route = pass[0];
 			mas_of_ticket[0].DeparturePlace = pass[1];
@@ -1092,9 +1257,9 @@ void buyPass() {
 			otchet << tzz;
 			otchet.close();
 			cout << tzz;
-			int newbalance=0;
+			int newbalance = 0;
 			newbalance = (atoi(main_balance) - stoi(new_price));
-			strcpy(main_balance,(to_string(newbalance)).c_str());
+			strcpy(main_balance, (to_string(newbalance)).c_str());
 			chan_bal();
 		}
 		else {
@@ -1141,19 +1306,59 @@ void addCard() {
 		if (strlen(card.c_str()) == 16) {
 			if (checkLuhn(card) == true) {
 				mas_of_card[0].Number_card = card;
-				cout << "\tВведите имя держателя карты" << endl;
-				cin >> mas_of_card[0].name;
-				cout << "\tВведите фамилию держателя карты" << endl;
-				cin >> mas_of_card[0].Surname;
+				bool flags = false;
+				while (flags == false) {
+					cout << "\tВведите имя держателя карты" << endl;
+					string name;
+					cin >> name;
+					if (all_of(name.begin(), name.end(), [](char c) { return std::isdigit(c); })) {
+						cout << "Неверный формат...Введите повторно" << endl;
+						flags = false;
+					}
+					else {
+						mas_of_card[0].name = name;
+						flags = true;
+					}
+				}
+				bool flagss = false;
+				while (flagss == false) {
+					cout << "\tВведите фамилию держателя карты" << endl;
+					string Surname;
+					cin >> Surname;
+					if (all_of(Surname.begin(), Surname.end(), [](char c) { return std::isdigit(c); })) {
+						cout << "Неверный формат...Введите повторно" << endl;
+						flagss = false;
+						mas_of_card[0].Surname=Surname;
+						flagss = true;
+					}
+					else {
+						mas_of_card[0].Surname = Surname;
+						flagss = true;
+					}
+				}
 				cout << "\tВведите срок действии карты" << endl;
-				cin >> mas_of_card[0].data_card;
+				system("cls");
+				mas_of_card[0].data_card = data_card();
 				string Balance;
 				Balance = "43543";
 				mas_of_card[0].balance = Balance;
-				cout << "\tВведите CCV" << endl;
-				cin >> mas_of_card[0].CCV;
+				bool flag = false;
+				while (flag == false) {
+					cout << "\tВведите CCV" << endl;
+					string ccv;
+					cin >> ccv;
+					if(all_of(ccv.begin(), ccv.end(), [](char c) { return std::isalpha(c); })) {
+						cout << "Неправильный формат...Повторите попытку..." << endl;
+						flag = false;
+					}
+					else {
+						flag = true;
+						mas_of_card[0].CCV = ccv;
+					}
+				}
 				writeEndFileCard(mas_of_card[0]);
 				delete[]mas_of_card;
+				prov_bal();
 				balance();
 			}
 			else {
@@ -1237,49 +1442,50 @@ void balance() {
 	}
 	}
 }
-void prov_bal(){
-ifstream fin(FILE_OF_BALANCE, ios::in);
-fin.seekg(0, ios::beg);
-char* login_check = new char[256];
-char* balance_check = new char[256];
-int checker = 0;
-int proverka = 0;
-int nomer_str = 0;
-while (!fin.eof()) {
-	fin >> login_check;
-	if (strcmp(main_loogin, login_check) == 0) {
-		proverka = 1;
-		nomer_str++;
-		break;
+void prov_bal() {
+	ifstream fin(FILE_OF_BALANCE, ios::in);
+	fin.seekg(0, ios::beg);
+	char* login_check = new char[256];
+	char* balance_check = new char[256];
+	int checker = 0;
+	int proverka = 0;
+	int nomer_str = 0;
+	while (!fin.eof()) {
+		fin >> login_check;
+		if (strcmp(main_loogin, login_check) == 0) {
+			proverka = 1;
+			nomer_str++;
+			break;
+		}
+		else {
+			checker++;
+		}
+		if (checker % 7 == 0) {
+			checker = 0;
+			nomer_str++;
+		}
+	}
+	if (proverka != 1) {
+		cout << "\tПожалуйста.Привяжите карточку,чтобы совершить платеж" << endl;
+		system("pause");
+		fin.close();
+		delete[]login_check;
+		delete[]balance_check;
+		balance();
 	}
 	else {
-		checker++;
-	}
-	if (checker % 7 == 0) {
-		checker = 0;
-		nomer_str++;
+		fin >> balance_check;
+		fin >> balance_check;
+		fin >> balance_check;
+		fin >> balance_check;
+		fin >> balance_check;
+		strcpy(main_balance, balance_check);
+		fin.close();
+		delete[]login_check;
+		delete[]balance_check;
+		return;
 	}
 }
-if (proverka != 1) {
-	cout << "\tПожалуйста.Привяжите карточку,чтобы совершить платеж" << endl;
-	system("pause");
-	fin.close();
-	delete[]login_check;
-	delete[]balance_check;
-	balance();
-}
-else {
-	fin >> balance_check;
-	fin >> balance_check;
-	fin >> balance_check;
-	fin >> balance_check;
-	fin >> balance_check;
-	strcpy(main_balance, balance_check);
-	fin.close();
-	delete[]login_check;
-	delete[]balance_check;
-	return;
-}}
 void chan_bal() {
 	vector<string>pay;
 	ifstream fin(FILE_OF_BALANCE, ios::in);
@@ -1366,7 +1572,7 @@ void filtr() {
 	tzz.add("Время прибытия");
 	tzz.add("В наличии");
 	tzz.add("Цена,$");
-	tzz.endOfRow(); 
+	tzz.endOfRow();
 	switch (checkInterval(1, 3)) {
 	case 1: {
 		string name;
